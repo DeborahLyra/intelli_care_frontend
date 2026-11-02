@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Lora } from "next/font/google";
 import "./globals.css";
-
-const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const display = Lora({ subsets: ["latin"], variable: "--font-display", weight: ["500", "600"] });
 
 export const metadata: Metadata = {
   title: "Clínica — painel de atendimento",
@@ -23,7 +19,7 @@ const noFlashScript = `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${sans.variable} ${display.variable}`}>
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />
       </head>

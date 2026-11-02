@@ -1,55 +1,17 @@
-"use client";
-
-import { useState } from "react";
-import { Topbar } from "@/components/Topbar";
-
-const defaultInfo = `## Sobre
-
-Clínica Sorriso Pleno – consultório odontológico focado em atendimento particular e convênios selecionados.
-
-## Endereço
-
-Rua das Orquídeas, 245 – Bairro Jardim das Flores – Belo Horizonte/MG – CEP 30140-070
-
-## Telefone / WhatsApp
-
-(83) 99966-2861
-
-## Convênios aceitos
-
-- Odonto Prev
-`;
-
-export default function MinhaClinicaPage() {
-  const [info, setInfo] = useState(defaultInfo);
-
-  return (
-    <div className="p-8">
-      <Topbar title="Minha Clínica" />
-
-      <p className="mt-6 max-w-2xl text-sm text-emerald-800/60 dark:text-emerald-50/60">
-        Esse texto é usado pela IA como fonte oficial de informações da clínica (endereço, convênios, formas de
-        pagamento, políticas etc). Quanto mais completo e claro, melhor a IA responde.
-      </p>
-
-      <div className="card mt-4 max-w-2xl p-5">
-        <label className="mb-1 block text-xs font-medium text-emerald-800/70 dark:text-emerald-50/70">
-          Nome da clínica
-        </label>
-        <input type="text" defaultValue="Clínica Sorriso Pleno" className="input" />
-
-        <label className="mb-1 mt-4 block text-xs font-medium text-emerald-800/70 dark:text-emerald-50/70">
-          Informações do consultório (base de conhecimento da IA)
-        </label>
-        <textarea
-          value={info}
-          onChange={(e) => setInfo(e.target.value)}
-          rows={12}
-          className="input resize-y font-mono text-xs leading-relaxed"
-        />
-
-        <button className="btn-primary mt-4">Salvar</button>
-      </div>
-    </div>
-  );
+'use client';
+import { useState } from 'react';
+import { Topbar } from '@/components/Topbar';
+import { useDemo } from '@/components/demo/Provider';
+export default function Page() {
+  const { data, update } = useDemo(); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
+  const clinic = data.clinics.find(c => c.id === data.clinicId);
+  async function save(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); const form = new FormData(event.currentTarget); const name = String(form.get('name')).trim(); const info = String(form.get('info')).trim();
+    if (!name || !info) { setError('Preencha o nome e as informações da clínica.'); return; }
+    setError(''); setBusy(true); await update(d => ({ ...d, clinics: d.clinics.map(c => c.id === d.clinicId ? { ...c, name, info } : c) })); setBusy(false);
+  }
+  return <><Topbar title="Minha Clínica"/><div className="page-content"><p className="text-sm text-muted">Edite as informações fictícias da clínica. Nesta demonstração, nenhum dado é enviado a uma IA.</p>
+    {error && <p role="alert" className="notice error">{error}</p>}
+    <form key={`${clinic?.id}-${clinic?.name}`} onSubmit={save} className="card max-w-2xl space-y-4 p-5"><label className="block text-sm">Nome da clínica<input className="input mt-1" name="name" defaultValue={clinic?.name} required maxLength={160}/></label><label className="block text-sm">Informações da clínica<textarea className="input mt-1" name="info" defaultValue={clinic?.info} required rows={10} maxLength={10000}/></label><button className="btn-primary" disabled={busy}>{busy ? 'Salvando…' : 'Salvar'}</button></form>
+  </div></>;
 }

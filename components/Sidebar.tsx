@@ -1,99 +1,18 @@
-"use client";
-
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  CalendarClock,
-  MessagesSquare,
-  Building2,
-  ClipboardList,
-  Radio,
-  Hospital,
-  Users,
-  HeartPulse,
-  Stethoscope,
-} from "lucide-react";
-
-// itens que existem de verdade no backend hoje
-const links = [
-  { href: "/metricas", label: "Agendamentos / Métricas", icon: CalendarClock },
-  { href: "/conversas", label: "Conversas", icon: MessagesSquare },
-  { href: "/minha-clinica", label: "Minha Clínica", icon: Building2 },
-  { href: "/servicos", label: "Serviços", icon: ClipboardList },
-  { href: "/canais", label: "Canais", icon: Radio },
-  { href: "/clinicas", label: "Clínicas", icon: Hospital, admin: true },
-  { href: "/usuarios", label: "Usuários", icon: Users, admin: true },
-];
-
-// telas que a gente já desenhou mas o backend ainda não expõe
-const upcoming = [
-  { href: "/pacientes", label: "Pacientes", icon: Users },
-  { href: "/medicos", label: "Médicos", icon: Stethoscope },
-];
-
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { HeartPulse, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+const links = [['/metricas','Agendamentos / Métricas'],['/conversas','Conversas'],['/minha-clinica','Minha Clínica'],['/servicos','Serviços'],['/canais','Canais'],['/clinicas','Clínicas'],['/usuarios','Usuários'],['/pacientes','Pacientes'],['/medicos','Médicos e equipe']];
 export function Sidebar() {
-  const pathname = usePathname();
-
-  return (
-    <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-black/[0.06] bg-white dark:border-white/[0.06] dark:bg-emerald-900">
-      <div className="flex items-center gap-2 px-5 py-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-sage-400">
-          <HeartPulse size={16} className="text-sage-50" />
-        </div>
-        <span className="font-display text-[15px] font-medium leading-tight">
-          Clínica Sorriso Pleno
-        </span>
-      </div>
-
-      <nav className="flex-1 space-y-0.5 px-3">
-        {links.map(({ href, label, icon: Icon, admin }) => {
-          const active = pathname === href;
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition ${
-                active
-                  ? "bg-sage-50 font-medium text-sage-500 dark:bg-sage-600 dark:text-sage-50"
-                  : "text-sage-800/70 hover:bg-black/[0.03] dark:text-sage-50/70 dark:hover:bg-white/[0.05]"
-              }`}
-            >
-              <Icon size={16} />
-              {label}
-              {admin && (
-                <span className="ml-auto text-[9px] uppercase tracking-wide text-sage-800/35 dark:text-sage-50/35">
-                  admin
-                </span>
-              )}
-            </Link>
-          );
-        })}
-
-        <p className="mt-4 px-3 pb-1 text-[10px] uppercase tracking-wide text-sage-800/35 dark:text-sage-50/35">
-          Em desenho (ainda sem backend)
-        </p>
-        {upcoming.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href;
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition ${
-                active
-                  ? "bg-sage-50 font-medium text-sage-500 dark:bg-sage-600 dark:text-sage-50"
-                  : "text-sage-800/50 hover:bg-black/[0.03] dark:text-sage-50/50 dark:hover:bg-white/[0.05]"
-              }`}
-            >
-              <Icon size={16} />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="border-t border-black/[0.06] px-5 py-4 text-xs text-sage-800/50 dark:border-white/[0.06] dark:text-sage-50/50">
-        v0.2 · agendamento próprio (sem Amigo)
-      </div>
+  const pathname = usePathname(); const [open, setOpen] = useState(false);
+  return <>
+    <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
+    <div className="flex items-center justify-between border-b border-line bg-surface p-4 lg:hidden"><span className="font-display">IntelliCare</span><button className="btn-ghost" aria-label={open ? 'Fechar menu' : 'Abrir menu'} aria-expanded={open} aria-controls="navigation" onClick={() => setOpen(!open)}>{open ? <X size={20}/> : <Menu size={20}/>}</button></div>
+    <aside id="navigation" className={`${open ? 'block' : 'hidden'} border-r border-line bg-surface lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-60 lg:shrink-0 lg:flex-col lg:overflow-y-auto`}>
+      <div className="flex items-center gap-2 p-5 font-display"><HeartPulse size={22} className="text-primary"/> IntelliCare</div>
+      <nav aria-label="Navegação principal" className="flex-1 space-y-1 px-3 pb-4">{links.map(([href,label]) => <Link key={href} href={href} aria-current={pathname === href ? 'page' : undefined} onClick={() => setOpen(false)} className={`block rounded-md px-3 py-2 text-sm ${pathname === href ? 'bg-accent-soft font-semibold text-accent-ink' : 'text-muted hover:bg-surface-soft hover:text-ink'}`}>{label}</Link>)}</nav>
+      <p className="p-5 text-xs text-muted">v0.3 · Demonstração</p>
     </aside>
-  );
+  </>;
 }

@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: serif;
+
+  --color-emerald-50: #EAF3DE;
+  --color-emerald-100: #C0DD97;
+  --color-emerald-200: #97C459;
+  --color-emerald-300: #639922;
+  --color-emerald-400: #3B6D11;
+  --color-emerald-500: #2F5D0F;
+  --color-emerald-600: #27500A;
+  --color-emerald-700: #1E3F08;
+  --color-emerald-800: #173404;
+  --color-emerald-900: #0F2402;
+
+  --color-clay-50: #FDF9F0;
+  --color-clay-400: #EF9F27;
+}
+
+@layer base {
+  body {
+    @apply bg-[#e1e5d9] text-emerald-900 dark:bg-[#282926] dark:text-emerald-50;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-black/[0.06] bg-white dark:border-white/[0.06] dark:bg-emerald-700;
+  }
+  .input {
+    @apply w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm text-emerald-800 placeholder:text-emerald-800/40 outline-none transition focus:border-emerald-300 dark:border-white/10 dark:bg-emerald-800 dark:text-emerald-50 dark:placeholder:text-emerald-50/30;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-md bg-emerald-400 px-4 py-2 text-sm font-medium text-emerald-50 transition hover:bg-emerald-500 disabled:opacity-40;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-md border border-black/10 px-4 py-2 text-sm font-medium text-emerald-800 transition hover:bg-black/[0.03] disabled:opacity-40 dark:border-white/10 dark:text-emerald-50 dark:hover:bg-white/[0.05];
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+}
